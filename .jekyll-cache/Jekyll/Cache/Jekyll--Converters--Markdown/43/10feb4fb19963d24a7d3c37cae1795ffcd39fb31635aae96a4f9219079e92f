@@ -1,0 +1,91 @@
+I"<p>Sequence tagging is a common task in Natural Language Processing. In this task, we are typically given a sequence of words <script type="math/tex">x_1,...,x_n</script>. We would like to tag each word, and thus generate a sequence
+of tags <script type="math/tex">y_1,...,y_n</script>. The simple linear chain CRF models the joint distribution of the two sequences as</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+p(x_1,...,x_n, y_1,...,y_n) &= [p(y_1)p(x_1|y_1)] \cdot [p(y_2|y_1)p(x_2|y_2)] \cdots [p(y_n|y_{n-1})p(x_n|y_n)] \\
+&= \prod_{i=1}^n [p(y_i|y_{i-1})p(x_i|y_i)] 
+\end{align} %]]></script>
+
+<p>, where we let <script type="math/tex">p(y_1 \mid y_0) = p(y_1)</script>. The above model assumes “local factoring”: the random variable <script type="math/tex">y_i</script> only depends on <script type="math/tex">y_{i-1}</script>, and <script type="math/tex">x_i</script> only depends on <script type="math/tex">y_i</script>.</p>
+
+<p>The components in the above equation can be written as</p>
+
+<script type="math/tex; mode=display">p(y_i|y_{i-1})p(x_i|y_i) = e^{\log [ p(y_i|y_{i-1})p(x_i|y_i) ]} = e^{\log p(y_i|y_{i-1}) + \log p(x_i|y_i)} \tag{1}</script>
+
+<p>Therefore, if we allow more generic forms for the exponents, then</p>
+
+<script type="math/tex; mode=display">p(y_i|y_{i-1})p(x_i|y_i) \propto e^{a_i + b_i}</script>
+
+<p>. Thus</p>
+
+<script type="math/tex; mode=display">p(x_1,...,x_n, y_1,...,y_n) \propto \prod_{i=1}^n e^{a_i + b_i} = e^{\sum_{i=1}^n (a_i+b_i)}</script>
+
+<p>. We can think of <script type="math/tex">\sum_{i=1}^n (a_i + b_i)</script> as a scoring function <script type="math/tex">S(x_1,...,x_n, y_1,...,y_n)</script>. Then we say that the joint probability <script type="math/tex">p(x_1,...,x_n, y_1,...,y_n)</script> is proportional
+to a score on <script type="math/tex">x_1,...,x_n, y_1,...,y_n</script>. This score is a sum of <script type="math/tex">n</script> components. Each component consists of a score that determines <script type="math/tex">x_i</script> given <script type="math/tex">y_i</script>, and a score that determines <script type="math/tex">y_i</script> 
+given <script type="math/tex">y_{i-1}</script>. We call the former “emit score”, and the latter “transition score”.</p>
+
+<p>The complete form of the joint probability distribution is</p>
+
+<script type="math/tex; mode=display">p(x_1,...,x_n, y_1,...,y_n) = \frac{1}{Z} \cdot e^{S(x_1,...,x_n, y_1,...,y_n)} \tag{2}</script>
+
+<p>, where <script type="math/tex">Z = \sum_{x_1,...,x_n, y_1,...,y_n} S(x_1,...,x_n, y_1,...,y_n)</script> is a normalization factor. So Equation (1) is merely a special case of Equation (2), where we let <script type="math/tex">a_i = \log p(x_i \mid y_i)</script>, 
+and <script type="math/tex">b_i = \log p(y_i \mid y_{i-1})</script>.</p>
+
+<h2 id="bilstm-crf">BiLSTM-CRF</h2>
+
+<p>The BiLSTM-CRF model is a Sequence-to-Sequence model that achieves very good performance in practice. In a typical implementation of BiLSTM-CRF, the input sequence of <script type="math/tex">n</script> words first pass through 
+an embedding layer, and then a BiLSTM layer. The output length of the BiLSTM layer is still <script type="math/tex">n</script>, but each element has the same dimension as the tag size <script type="math/tex">m</script>. In other words, we have a <script type="math/tex">m \times n</script> 
+matirx</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+A = 
+\begin{pmatrix}
+a_{11} & \cdots & a_{1n} \\
+a_{21} & \cdots & a_{2n} \\
+\vdots & \cdots & \vdots \\
+a_{m1} & \cdots & a_{mn} \\
+\end{pmatrix} %]]></script>
+
+<p>, where <script type="math/tex">a_{ij}</script> is the emit score from tag <script type="math/tex">j</script> to the input <script type="math/tex">x_i</script>. Each column vector of <script type="math/tex">A</script> is the vector that stores the emit scores from each tag to the input word at that step.</p>
+
+<p>After that, the CRF takes the emit vectors as input, and outputs the final sequence <script type="math/tex">y_1,...,y_n</script>. The CRF layer is parameterized by a transition matrix <script type="math/tex">B = [b_{ij}]</script>, where each entry <script type="math/tex">b_{ij}</script> 
+is the transition score from tag <script type="math/tex">i</script> to tag <script type="math/tex">j</script>.</p>
+
+<p>To train the CRF layer, we are given a sample of <script type="math/tex">K</script> instances. We would like to minimize their training errors. The error function of each instance is its negative log-likelihood,</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+L(x, y) &= -\log p(y|x) \\
+&= -\log \frac{p(x, y)}{p(x)}  \\
+&= -\log \frac{\frac{1}{Z}e^{S(x, y)}}{\frac{1}{Z}\sum_{y'} e^{S(x, y')}} \\
+&= \log [\sum_{y'} e^{S(x, y')}] - S(x, y)
+\end{align} %]]></script>
+
+<p>Given <script type="math/tex">A, B, x, y</script>, the second term <script type="math/tex">S(x, y)</script> is straightforward to obtain. The difficulty lies in evaluating the first term <script type="math/tex">\log [\sum_{y'}e^{S(x, y')}]</script>. Here <script type="math/tex">y'</script> means a possible 
+path <script type="math/tex">y_1,...,y_n</script>. There are totally <script type="math/tex">m^n</script> paths, and it is too costly to evaluate all of them.</p>
+
+<p>The trick is to use Viterbi algorithm. Let <script type="math/tex">(*, y_n=j)</script> denote a path of which the <script type="math/tex">n</script>-th step is <script type="math/tex">j</script>. Similarly, <script type="math/tex">(*, y_{n-1})</script> means a path of which the <script type="math/tex">(n-1)</script>-th 
+step is <script type="math/tex">j</script>. Now the first term can be written as</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+\log [\sum_{y'} e^{S(x, y')}] &= \log \big( e^{S_{1,1,...,1}} + ... + e^{S_{m,m,....m}} \big), \ m^n \ terms \ , \ s_{...} \ is \ the \ score \ of \ a \ path \\
+&= \log \big(\sum_{*}e^{S(*, y_n=1)} + ... + \sum_{*}e^{S(*, y_n=m)} \big), \ the \ sum \ is \ divided \ into \ m \ groups \\
+&= \log \big( e^{H(n-1, 1)} + ... + e^{H(n-1, m)}\big)
+\end{align} %]]></script>
+
+<p>, where <script type="math/tex">e^{H(n-1, j)} = \sum_{*}e^{S(*, y_n=j)}</script>. The idea is to compute <script type="math/tex">H(n-1, j)</script> in a recursive way. That is, <script type="math/tex">H(n-1, j) = f(H(n-2, 1),...,H(n-2, m))</script>. 
+To find out such recursive function, observe</p>
+
+<script type="math/tex; mode=display">\sum_{*} e^{S(*, y_n=j)} = e^{\log (\sum_{*} e^{S(*, y_n=j)} )}</script>
+
+<p>. Therefore</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+H(n-1, j) &= \log (\sum_{*} e^{S(*, y_n=j)}) \\
+&= \log \big[ (e^{S(*, y_{n-1}=1, y_n=j)} + ... ) + ... + (e^{S(*, y_{n-1}=m, y_n=j)}+...)\big] , \ the \ sum \ is \ divided \ into \ m \ groups \\
+&= \log \big[ e^{a_{jn}+b_{1j}} e^{H(n-2, 1)}+ ... +  e^{a_{jn}+b_{mj}} e^{H(n-2, m)} \big]
+\end{align} %]]></script>
+:ET
