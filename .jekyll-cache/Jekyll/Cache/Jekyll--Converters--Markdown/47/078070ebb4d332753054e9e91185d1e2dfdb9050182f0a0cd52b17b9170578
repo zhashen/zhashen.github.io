@@ -1,0 +1,55 @@
+I"@"<p><a href="https://www.cse.huji.ac.il/~shais/UnderstandingMachineLearning/index.html">Understanding Machine Learning: From Theory to Algorithms</a> is an excellent textbook for machine learning practioners. 
+In the book the authors give a complete introduction to the PAC learning framework, based on which several common machine learning algorithms, such as linear regression, SVM and decition trees, 
+are analyzed and compared. In this blog series, I will retell the story of PAC learning, and along the way try to clarify sevral important notions which often cause confusion to new learners.</p>
+
+<p>PAC stands for <strong>Probably Approximately Correct</strong>. The idea behind PAC is simple. Given a random traning sample, if the sample size is large enough, one can learn a <strong>good</strong> classifier 
+with <strong>a very high chance</strong>. A “good” classifier is a classifier that is <strong>approximately correct</strong>. Since it is not possible to get all data points in a traning sample, one cannot expect to learn 
+a completely correct classifier, but rather an approximately correct one. On the other hand, there is no guarantee that the random traning sample is a “good” sample that covers a area as large as 
+possible in the domain of subject matter. But there is a high chance for such a sample. Therefore, one <strong>probably</strong> can learn a good classifier with this sample.</p>
+
+<p>To be specific, let’s consider the binary classification problem. There is a domain of subject matter, denoted by <script type="math/tex">X</script>. Each object in this domain <script type="math/tex">x \in X</script> is labelled as either <script type="math/tex">0</script> or <script type="math/tex">1</script> 
+by a labelling function <script type="math/tex">f</script>. We often use a variable <script type="math/tex">y</script> to denote the label. To learn the function <script type="math/tex">f</script>, we are given a random training sample <script type="math/tex">S=\{ (x^{(1)}, y^{(1)}),...,(x^{(m)}, y^{(m)}) \}</script>, which is of size <script type="math/tex">m</script> and drawn i.i.d. from 
+the domain <script type="math/tex">X</script> according to a distribution <script type="math/tex">D</script>. The learning process involves a learning algorithm (also called a learner) <script type="math/tex">A</script> and a class of candidate functions <script type="math/tex">H</script>. The learner <script type="math/tex">A</script>, upon
+receiving the training sample <script type="math/tex">S</script>, outputs a function <script type="math/tex">h \in H</script> that aims at approximating the true labelling function <script type="math/tex">f</script>. After the above settings, there are two questions of interest:
+(1) Can the learner <script type="math/tex">A</script> pick a good function <script type="math/tex">h</script> from the candidate class <script type="math/tex">H</script>?; (2) If so, how many instances in the training sample does it need to pick a good function <script type="math/tex">h</script>?</p>
+
+<p>In fact, these two questions are related to the key notion of learnability in PAC learning framework. If there is a learner <script type="math/tex">A</script> that given sufficiently large sample 
+can pick a good function <script type="math/tex">h</script> from the class <script type="math/tex">H</script>, we say the class <script type="math/tex">H</script> is PAC-learnable. To define precisely PAC-learnability, we need a notion of error evaluation.</p>
+
+<p>In binary classification, a common error evalution of a function <script type="math/tex">h</script> is its expected 0-1 loss:</p>
+
+<script type="math/tex; mode=display">L_D(h) = E_{x \sim D}[I_{h(x) \neq y}]</script>
+
+<p>, where <script type="math/tex">I_{condition}</script> is an indicator variable takes value <script type="math/tex">1</script> if the condition holds, and <script type="math/tex">0</script> otherwise. The expectation is taken over the whole domain with the distrubion <script type="math/tex">D</script>.</p>
+
+<p>When the function <script type="math/tex">h</script> is evaluated on the whole domain, its error <script type="math/tex">L_D(h)</script> is often called <strong>generalization error</strong>. The term “generalization” arises from the fact that <script type="math/tex">h</script> is obtained through 
+a training process with a training sample, and then generalized onto the whole domain. So in the training process, <script type="math/tex">h</script> is evaluted on the training sample 
+<script type="math/tex">S=\{ (x_1, y_1),...,(x_m, y_m) \}</script>, and the associated error is called  <strong>training error</strong>, which is defined as</p>
+
+<script type="math/tex; mode=display">L_S(h) = \sum_{i=1}^m I_{h(x_i)\neq y_i}</script>
+
+<p>. The training error is also called <strong>empirical risk</strong>. A natural and common learning algorithm is to minimize training error. In other words, the learning algorithm is searching through the class 
+<script type="math/tex">H</script>, and tries to find a function <script type="math/tex">h</script> that minimizes <script type="math/tex">L_S(h)</script>. This learning algorithm is called <strong>Empirical Risk Minimizer</strong>, abbreviated as <strong>ERM</strong>. With these set up, we are now ready to 
+give a definition of PAC learnability.</p>
+
+<p>First. we give a weak version of defining PAC-learnability.</p>
+
+<p><strong>Definition 1 (PAC-learnability with respect to a labelling function):</strong> Consider a domain <script type="math/tex">X</script>, and a labelling function <script type="math/tex">f: X \rightarrow \{ 0, 1 \}</script>.
+ We say that a class of candidate functions <script type="math/tex">H</script> is PAC-learnable with respect to <script type="math/tex">f</script> if: (a) there is a function <script type="math/tex">h^* \in H</script> that achieves <script type="math/tex">0</script> generalization error, i.e. <script type="math/tex">L_D(h^*)=0</script>;
+  (b) there exists a learner <script type="math/tex">A</script> such that for any distribution <script type="math/tex">D</script> over <script type="math/tex">X</script>, and any <script type="math/tex">\epsilon, \delta > 0</script>, when given any random traning sample <script type="math/tex">S</script> of sufficiently large size <script type="math/tex">m</script>, 
+  with probablity at least <script type="math/tex">1-\delta</script> it outputs a function <script type="math/tex">h=A(S)</script> whose generlization error <script type="math/tex">% <![CDATA[
+L_D(h) < \epsilon %]]></script>.</p>
+
+<p>Condition (a) in the above definition is called <strong>Realization Assumption</strong>, meaning that the 0 error can be realized by a function in <script type="math/tex">H</script>. 
+In fact, realization assumption is not essential in defining PAC. It will be removed later in a more general notion called agnostic PAC-learning. 
+Condition (b) is the precise definition of what we means
+by ““Probably Approximately Correct””. If a class <script type="math/tex">H</script> is PAC-learnable (with respect to the labelling function <script type="math/tex">f</script>), then of course there must exist a learner that can pick a good function <script type="math/tex">h</script>
+that achieves very small generation error <script type="math/tex">\epsilon</script>, with a very high chance (<script type="math/tex">>1-\delta</script>) given sufficiently large sample of size <script type="math/tex">m</script> no matter what the distribution <script type="math/tex">D</script> is.</p>
+
+<p>To further make precise the notion of PAC-learnability, we remove the constraint of learning with respect to a specific labelling function <script type="math/tex">f</script>.</p>
+
+<p><strong>Definition 2 (PAC-learnability):</strong> Consider a domain <script type="math/tex">X</script>, and its binary classification problems. We say a class of candidate functions <script type="math/tex">H</script> is PAC-learnable if: (a) for any labelling <script type="math/tex">f</script>, 
+if the realization assumption holds for <script type="math/tex">H</script>; (b) and then there exists a learner <script type="math/tex">A</script> such that for any distribution <script type="math/tex">D</script> over <script type="math/tex">X</script>, and any <script type="math/tex">\epsilon, \delta > 0</script>, when given any random traning sample <script type="math/tex">S</script> of sufficiently large size <script type="math/tex">m</script>, 
+  with probablity at least <script type="math/tex">1-\delta</script> it outputs a function <script type="math/tex">h=A(S)</script> whose generlization error <script type="math/tex">% <![CDATA[
+L_D(h) < \epsilon %]]></script>.</p>
+:ET
