@@ -1,3 +1,0 @@
-I"u<p>Sequence tagging is a common task in Natural Language Processing. In this task, we are typically given a sequence of words <script type="math/tex">x_1,...,x_n</script>. We would like to tag each word, and thus generate a sequence
-of tags <script type="math/tex">y_1,...,y_n</script>. The simple linear chain CRF models the joint distribution of the two sequences as</p>
-:ET

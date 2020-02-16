@@ -1,8 +1,0 @@
-I"c<p><a href="https://www.cse.huji.ac.il/~shais/UnderstandingMachineLearning/index.html">Understanding Machine Learning: From Theory to Algorithms</a> is an excellent textbook for machine learning practioners. 
-In the book the authors give a complete introduction to the PAC learning framework, based on which several common machine learning algorithms, such as linear regression, SVM and decition trees, 
-are analyzed and compared. In this blog series, I will provide some notes on the PAC learning framework, and try to clarify sevral important notions which often cause confusion to new learners.</p>
-
-<p>PAC stands for <strong>Probably Approximately Correct</strong>. The idea behind PAC is simple. Given a random traning sample, if the sample size is large enough, one can learn a <strong>good</strong> classifier 
-with <strong>a very high chance</strong>. A “good” classifier is a classifier that is <strong>approximately correct</strong>. Since it is not possible to get all data points in a traning sample, one cannot expect to learn 
-a completely correct classifier, but rather an approximately correct one.</p>
-:ET
