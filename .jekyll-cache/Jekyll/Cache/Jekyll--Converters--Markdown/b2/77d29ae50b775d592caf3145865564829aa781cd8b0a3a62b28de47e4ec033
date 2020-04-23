@@ -1,0 +1,4 @@
+I"%<p>Kleene’s Theorem tells us that for any regular language <script type="math/tex">L</script>, there is always a DFA that recognizes <script type="math/tex">L</script>. But directly construct the DFA would follow the process of creating an equivalent <script type="math/tex">\epsilon-</script>NFA, turn it into 
+an equivalent NFA, and then turn it into a DFA. The resulting DFA may contain two many states. Recall in the proof of converting a NFA to an equivalent DFA, we are taking the states in DFA as a power set of the states in 
+the NFA.</p>
+:ET

@@ -1,0 +1,88 @@
+I"#<p>The class of all functions is not PAC-learnable. The reason, loosely speaking, is simply that there are far too many functions. So that an adversary can always pick a function that surprises the 
+learner. This notion is made precise by the following theorem.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Theorem 16 (No Free Lunch Theorem)</strong>: Consider a domain <script type="math/tex">X</script> and a binary label set <script type="math/tex">Y=\{ 0, 1\}</script>. Consider the class of all functions <script type="math/tex">H</script> and an arbitrary learner <script type="math/tex">A</script>. 
+Then for any <script type="math/tex">% <![CDATA[
+m < |X|/2 %]]></script>, there exists a distribution <script type="math/tex">D</script> over <script type="math/tex">Z = X \times Y</script> such that: (1) there exists <script type="math/tex">f \in H</script> such that <script type="math/tex">L_D(f) = 0</script>, and (2) for any random sample <script type="math/tex">S_m</script> 
+drawn i.i.d. by <script type="math/tex">D</script>, with probability at least <script type="math/tex">\frac{1}{7}</script> the generalization error <script type="math/tex">L_D(A(S)) \geq \frac{1}{8}</script> 
+</span></p>
+
+<p><em>Proof</em>: Consider a set <script type="math/tex">C \subset X</script> of size <script type="math/tex">2m</script>, and the class of functions <script type="math/tex">H_C</script> which is <script type="math/tex">H</script> restricted to <script type="math/tex">C</script>. Note that <script type="math/tex">H_C</script> contains all possible functions 
+<script type="math/tex">f: C \rightarrow  \{ 0, 1 \}</script>. So its size <script type="math/tex">T = 2^{2m}</script>.  Let <script type="math/tex">f_1,...,f_i,...,f_T</script> be the sequence of functions in <script type="math/tex">H_C</script>.</p>
+
+<p>Now for each <script type="math/tex">f_i</script>, let the distribution <script type="math/tex">D_i</script> over <script type="math/tex">C \times \{ 0, 1 \}</script> be such that <script type="math/tex">P(x, y) = \frac{1}{|C|}</script> if <script type="math/tex">f_i(x)= y</script>, and <script type="math/tex">P(x, y) = 0</script> otherwise. 
+Note that <script type="math/tex">L_{D_i}(f_i) = 0</script>.</p>
+
+<p>Next, if we i.i.d. draw <script type="math/tex">m</script> sample from <script type="math/tex">X</script>, then there are totally <script type="math/tex">K=2m^m</script> different samples. Denote these samples by <script type="math/tex">S_1,...,S_j,..., S_K</script>. Furthermore, for a specific distribution
+<script type="math/tex">D_i</script>, let <script type="math/tex">S_{j, i}</script> denote the <script type="math/tex">j-th</script> sample that drawn by <script type="math/tex">D_i</script>. (For each distribution <script type="math/tex">D_i</script>, each <script type="math/tex">x</script> can only be labelled by either 0 o 1, but not both.)</p>
+
+<p>After the above set up, we are going to show</p>
+
+<script type="math/tex; mode=display">\max_i E_{S_{j, i} \sim D_i}\big[L_{D_i}(A(S_{j, i}))\big] \geq \frac{1}{4}  \tag{1}</script>
+
+<p>. If (1) is true, then there exists at least one <script type="math/tex">D_i</script> such that <script type="math/tex">E_{S_{j, i} \sim D_i}\big[L_{D_i}(A(S_{j, i}))\big] \geq \frac{1}{4}</script>. This further means there exists a distribution <script type="math/tex">D</script> 
+over <script type="math/tex">X \times Y</script> (<script type="math/tex">P(x, y) = 0</script> for <script type="math/tex">x \notin C</script>) such that there exists <script type="math/tex">f_i</script> which makes <script type="math/tex">L_D(f_i) = 0</script>, and</p>
+
+<script type="math/tex; mode=display">E_{S_{j} \sim D}\big[L_{D_i}(A(S_{j}))\big] \geq \frac{1}{4}  \tag{2}</script>
+
+<p>Applying the inequality <script type="math/tex">P[X > 1-a] \geq \frac{E[X] - (1-a)}{a}</script> and let <script type="math/tex">a=\frac{7}{8}</script>, (2) would imply</p>
+
+<script type="math/tex; mode=display">P[L_D(A(S)) \geq \frac{1}{8}] \geq \frac{1}{7}</script>
+
+<p>, which is our desired result.</p>
+
+<p>To prove (1), we apply the trick “max &gt; average &gt; min” . So</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+ \max_i E_{S_{j, i} \sim D_i}\big[L_{D_i}(A(S_{j, i}))\big] &\geq \frac{1}{T} \sum_{i=1}^T  E_{S_{j, i} \sim D_i}\big[L_{D_i}(A(S_{j, i}))\big] \\
+ &= \frac{1}{T} \sum_{i=1}^T \frac{1}{K} \sum_{j=1}^K L_{D_i}(A(S_{j, i})) \\
+ &= \frac{1}{K} \sum_{j=1}^K \frac{1}{T} \sum_{i=1}^T L_{D_i}(A(S_{j, i})) \\
+ &\geq min_j \frac{1}{T} \sum_{i=1}^T L_{D_i}(A(S_{j, i}))  \tag{3}
+\end{align} %]]></script>
+
+<p>. The second line above holds because the samples <script type="math/tex">S_1,...,S_j,...,S_K</script> are equally likely to be drawn. So the expected value is simply obtained by summing up first and then taking average.</p>
+
+<p>Looking at equaiton (3), we know that in order for (1) to be true, we have to prove for every sample <script type="math/tex">S_j</script>,</p>
+
+<script type="math/tex; mode=display">\frac{1}{T} \sum_{i=1}^T L_{D_i}(A(S_{j, i})) \geq \frac{1}{4} \tag{4}</script>
+
+<p>. To this end, let’s carefully look at the sample <script type="math/tex">S_{j, i}</script>. Note that <script type="math/tex">S_{j, i}</script> include at most <script type="math/tex">m</script> unique instances of <script type="math/tex">C</script>. So let’s <script type="math/tex">C' \subset C</script> be the set that contains 
+<script type="math/tex">x</script> such that <script type="math/tex">x \notin S_{j}</script>. Clearly <script type="math/tex">|C'| = p \geq m</script>. Thus</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+\frac{1}{T} \sum_{i=1}^T L_{D_i}(A(S_{j, i})) &= \frac{1}{T} \sum_{i=1}^T \frac{1}{2m}\sum_{r=1}^{2m} I_{A(S_{j, i})(x_r) \neq f_i(x_r)}  , \ \  sum \ up \ each \ instance \ error \\
+&\geq \frac{1}{T} \sum_{i=1}^T \frac{1}{2m} \sum_{x_r \in C'} I_{A(S_{j, i})(x_r) \neq f_i(x_r)} , \ \ only \ consider \ instances \ in \ C_r \\
+&\geq \frac{1}{T} \sum_{i=1}^T \frac{1}{2p} \sum_{x_r \in C'} I_{A(S_{j, i})(x_r) \neq f_i(x_r)} , \ \ since \ p \geq m \\
+&= \frac{1}{2} \frac{1}{p} \sum_{x_r \in C'}  \frac{1}{T} \sum_{i=1}^T I_{A(S_{j, i})(x_r) \neq f_i(x_r)}  \\
+&\geq \frac{1}{2} \cdot \min_{x_r \in C'}  \frac{1}{T} \sum_{i=1}^T I_{A(S_{j, i})(x_r) \neq f_i(x_r)}
+\end{align} %]]></script>
+
+<p>. Now it remains to show for every <script type="math/tex">x_r \in C'</script></p>
+
+<script type="math/tex; mode=display">\frac{1}{T} \sum_{i=1}^T  I_{A(S_{j, i})(x_r) \neq f_i(x_r)} \geq \frac{1}{2} \tag{5}</script>
+
+<p>To see this, we can divide the <script type="math/tex">T</script> functions <script type="math/tex">f_1,..., f_T</script> into <script type="math/tex">\frac{T}{2}</script> pairs, each of which satisfies <script type="math/tex">f_{i_1}(x_r) \neq f_{i_2}(x_r)</script> but <script type="math/tex">f_{i_1}(x)=f_{i_2}(x)</script> for all other 
+<script type="math/tex">x \in C</script>. Thus, for each pair, either <script type="math/tex">A(S_{j, i_1})(x_r) = f_i(x_r)</script> or <script type="math/tex">A(S_{j, i_2})(x_r) = f_i(x_r)</script>. This results in</p>
+
+<script type="math/tex; mode=display">\frac{1}{T} \sum_{i=1}^T  I_{A(S_{j, i})(x_r) \neq f_i(x_r)} = \frac{1}{T} \cdot \frac{T}{2} [I_{A(S_{j, i_1})(x_r) = f_i(x_r)} + I_{A(S_{j, i_2})(x_r) = f_i(x_r)}] = \frac{1}{2}</script>
+
+<p>. This completes our proof. <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>Eqution (5) in the above proof is the key step. Essentially it means: if we can only see a sample half the size of the whole domain, you can’t predict the other half.</p>
+
+<p>With No Free Lunch Theorem, it is straightforward to prove</p>
+
+<p><span style="color:dodgerblue">
+<strong>Corollary 17:</strong> The class of all functions is not PAC-learnable.
+</span></p>
+
+<p><em>Proof</em>: Assume it is PAC-learnable. Then there exists a desired learner <script type="math/tex">A</script>. Now take <script type="math/tex">\epsilon=\frac{1}{8}</script> and <script type="math/tex">\delta=\frac{1}{7}</script>. According to No Free Lunch function, no matter how 
+large <script type="math/tex">m</script> is, there always exists <script type="math/tex">C \subset X</script> (here of course we are talking about infinite domains) of size <script type="math/tex">2m</script> such that <script type="math/tex">A</script> fails on a distribution <script type="math/tex">D</script>. Therefore, <script type="math/tex">A</script> cannot be the 
+PAC-learner. <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>One may wonder whether any infinite class is not PAC-learnable. Luckily the anwser is negative. The feature that determines PAC-learnability is not a class’s absolute size but its “effective size”.
+This is characterized by a notion called VC-dimension. In the next post, I will introduce the concept of VC-dimension and demonstrate the proof that PAC-learnability implies finite VC demension.</p>
+:ET

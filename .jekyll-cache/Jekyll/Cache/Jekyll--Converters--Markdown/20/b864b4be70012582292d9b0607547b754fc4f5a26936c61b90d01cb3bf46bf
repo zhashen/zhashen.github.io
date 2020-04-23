@@ -1,0 +1,83 @@
+I"…<p>Recall that in a context-free grammar a production rule only contains one variable on its left hand side. In this post, we show that these rules can be re-written in <strong>Chomsky Normal Form</strong>, which is 
+either <script type="math/tex">X \rightarrow YZ</script> or <script type="math/tex">X \rightarrow a</script>.</p>
+
+<p>Fomally, we say a context-free grammar is in Chomsky normal form if its production rules satisfy:</p>
+
+<p>(1) they are of the form either <script type="math/tex">X \rightarrow YZ</script> or <script type="math/tex">X \rightarrow a</script></p>
+
+<p>(2) no rule is of the form <script type="math/tex">X \rightarrow \epsilon</script>, except for the possible <script type="math/tex">X_0 \rightarrow \epsilon</script>, provided there are no <script type="math/tex">X_0</script> appearances on the right hand sides of all the other rules.</p>
+
+<p>The process of reaching Chomsky normal form from any general form consists of three steps: (1) convert it to length-increasing; (2) get rid of unit rules; (3) convert all rules to Chomsky normal forms.</p>
+
+<p><strong>Theorem 10: For any context-free grammar, there exists an equivalent length-increasing context-free grammar.</strong></p>
+
+<p><em>Proof</em>: Consider a context-free grammar <script type="math/tex">G = (\Sigma_V, \Sigma_C, X_0, P)</script>, construct the length-increasing grammar <script type="math/tex">G' = (\Sigma_V \cup \{ S \}, \Sigma_C, S, P')</script> as follows.</p>
+
+<p>If <script type="math/tex">X_0 \rightarrow \epsilon</script> exists, add two new rules <script type="math/tex">S \rightarrow X_0</script> and <script type="math/tex">S \rightarrow \epsilon</script>. If <script type="math/tex">X_0 \rightarrow \epsilon</script> does not exist, add only the rule <script type="math/tex">S \rightarrow X_0</script>.</p>
+
+<p>Next, we define the set of nullable variables <script type="math/tex">\Lambda_{\epsilon}</script> recursively as follows:</p>
+
+<p>(1) If <script type="math/tex">X \rightarrow \epsilon</script> exists, then <script type="math/tex">X \in \Lambda_{\epsilon}</script></p>
+
+<p>(2) If <script type="math/tex">Y \rightarrow w</script> exists where <script type="math/tex">w \in \Lambda_{\epsilon}^{+}</script>, then <script type="math/tex">Y \in \Lambda_{\epsilon}</script></p>
+
+<p>(3) A variable is in <script type="math/tex">\Lambda_{\epsilon}</script> only if it is so by (1) and (2)</p>
+
+<p>In short, the set <script type="math/tex">\Lambda_{\epsilon}</script> consists of variables having branches that evetually reach <script type="math/tex">\epsilon</script>.</p>
+
+<p>Note we form the rules in <script type="math/tex">P'</script>. Note that we have already the rules <script type="math/tex">S \rightarrow X_0</script> and <script type="math/tex">S \rightarrow \epsilon</script> in <script type="math/tex">P'</script>. For a rule <script type="math/tex">X \rightarrow w</script> in <script type="math/tex">P</script>, there <script type="math/tex">w</script> is not <script type="math/tex">\epsilon</script> or there are 
+no nullable variables in <script type="math/tex">w</script>, then we add it to <script type="math/tex">P'</script>. If <script type="math/tex">w</script> is <script type="math/tex">\epsilon</script>, we ignore it. If the set of nullable variables <script type="math/tex">w_{\epsilon}</script> in <script type="math/tex">w</script> is not empty, then we add rules in <script type="math/tex">P'</script> which is formed 
+by eliminating a subset of <script type="math/tex">w_{\epsilon}</script> in <script type="math/tex">X \rightarrow w</script>. For example, suppose <script type="math/tex">Y_1, Y_2, Y_3</script> are nullable variables, and <script type="math/tex">X \rightarrow Y_1Y_2abY_3c</script> is a rule in <script type="math/tex">P</script>. Then we will add the following eight 
+rules in <script type="math/tex">P'</script>:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+& X \rightarrow Y_1Y_2abY_3c \\
+& X \rightarrow Y_2abY_3c, \ X \rightarrow Y_1abY_3c, \ X \rightarrow Y_1Y_2abc \\
+& X \rightarrow abY_3c, \ X \rightarrow Y_2abc, \ X \rightarrow Y_1abc \\
+& X \rightarrow abc
+\end{align} %]]></script>
+
+<p>The idea behind the above process is that since we no longer have any <script type="math/tex">Y \rightarrow \epsilon</script> in <script type="math/tex">P'</script>, to deal with the nullable variables we have to delete them in the original rules. Since we canâ€™t delete them all 
+in case there exists some non-empty deriviation, we have to include all possible combination of them and create several new rules.</p>
+
+<p>It is not difficult to show that the resulting grammar <script type="math/tex">G'</script> generates the same language as <script type="math/tex">G</script>. <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>By Theorem 10 and Theorem 5 <a href="/formal/language/2020/02/29/CFG1.html">in the previous post</a>, we have</p>
+
+<p><strong>Lemma 11: Context-free Grammar <script type="math/tex">\subseteq</script> Context-sensitive Grammar</strong></p>
+
+<p>By Theorem 10, we can construct an equivalent grammar in length-increasing form. The next step is to get rid of unit rules <script type="math/tex">X \rightarrow Y</script>.</p>
+
+<p><strong>Theorem 12: For any context-free grammar with unit rules, there is an equivalent context-free grammar without unit rules.</strong></p>
+
+<p><em>Proof</em>: For a variable <script type="math/tex">X</script>, denote the set <script type="math/tex">\Sigma_X</script> consisting of the variables that derived from <script type="math/tex">X</script> using only unit rules. Then for every <script type="math/tex">Y \in \Sigma_X</script>, if there exists <script type="math/tex">Y \rightarrow w</script> which is not 
+a unit rule, we add a new rule <script type="math/tex">X \rightarrow w</script>. Finally, we delete all unit rules. The resulting grammar generates the same language as the original one. <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>By Theorem 10 and 12, for any context-free grammar we can construct an equivalent grammar whose set of production rules (1) contains no <script type="math/tex">X \rightarrow \epsilon</script> except for the possible <script type="math/tex">X_0 \rightarrow \epsilon</script>; (2) 
+contains no unit rules. The rules in the equivalent grammar are of the forms <script type="math/tex">X \rightarrow Y_1...Y_n</script> where no constants appear on the right hand side, or <script type="math/tex">X \rightarrow w</script> where there are some constants on the right 
+hand side. For the latter case, suppose it is of the form <script type="math/tex">X \rightarrow u_1Y_1...u_nY_n</script>, where <script type="math/tex">u_i \in \Sigma_C^*</script>. It is not difficult to rewrite it as a set of rules that take the form of either <script type="math/tex">X \rightarrow Z_1...Z_m</script> 
+or <script type="math/tex">Z_i \rightarrow a</script>. For example, the rule <script type="math/tex">X \rightarrow Y_1aY_2</script> can be replaced by</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+& X \rightarrow Z_1Y_2 \\
+& Z_1 \rightarrow Y_1Z_2 \\
+& Z_2 \rightarrow a \\
+\end{align} %]]></script>
+
+<p>So, it remains to show how rules like <script type="math/tex">X \rightarrow Y_1...Y_n</script> can be replaced with <script type="math/tex">X \rightarrow YZ</script>. This can be easily done by creating new rules</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+& X \rightarrow Y_1 Z_1 \\
+& Z_1 \rightarrow Y_2 Z_2 \\
+& \vdots \\
+& Z_{n-1} \rightarrow Y_{n-1}Y_n
+\end{align} %]]></script>
+
+<p>Thus, we have established</p>
+
+<p><strong>Theorem 13: For any context-free grammar, there is an equivalent context-free grammar in Chomsky normal form.</strong></p>
+
+:ET

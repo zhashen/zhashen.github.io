@@ -1,0 +1,68 @@
+I"�#<p>Kleene’s Theorem tells us that for any regular language <script type="math/tex">L</script>, there is always a DFA that recognizes <script type="math/tex">L</script>. But directly construct the DFA would follow the process of creating an equivalent <script type="math/tex">\epsilon-</script>NFA, turn it into 
+an equivalent NFA, and then turn it into a DFA. The resulting DFA may contain two many states. Recall in the proof of converting a NFA to an equivalent DFA, we are taking the states in DFA as a power set of the states in 
+the NFA.</p>
+
+<p>In this post, we will discuss <a href="https://en.wikipedia.org/wiki/Myhill%E2%80%93Nerode_theorem">Myhill-Nerode Theorem</a>, which gives sufficient and necessary conditions for characterizing regular languages with small finite 
+automata.</p>
+
+<p>We begin with the notion of equivalent prefix.</p>
+
+<p><strong>Definition 9 (Equivalent Prefix): For a language <script type="math/tex">L</script>, we say two words <script type="math/tex">w, v</script> are <script type="math/tex">L-</script>equivalent, denoted by <script type="math/tex">w \equiv_L v</script>, if for any word <script type="math/tex">u</script>, either both of <script type="math/tex">wu, vu</script> are in <script type="math/tex">L</script> or both of 
+<script type="math/tex">wu, vu</script> are not in <script type="math/tex">L</script>. In this case, we also say <script type="math/tex">w, v</script> are equivalent prefixes with respect to <script type="math/tex">L</script>.</strong></p>
+
+<p>With the notion of equivalent prefix, we can define the notion of separation.</p>
+
+<p><strong>Definition 10 (Separation): For a language <script type="math/tex">L</script>, if two words <script type="math/tex">w, v</script> are not <script type="math/tex">L-</script>equivalent, then they are <script type="math/tex">L-</script>separated. That is, there exists a word <script type="math/tex">u</script> such that one of <script type="math/tex">wu, vu</script> is in <script type="math/tex">L</script> while the 
+other is not.</strong></p>
+
+<p>It is not difficult to see that <script type="math/tex">\equiv_L</script> is an equivalent relation.</p>
+
+<p><strong>Lemma 11: <script type="math/tex">\equiv_L</script> is an equivalent relation for any language <script type="math/tex">L</script>. That is, for any words <script type="math/tex">w, u, v</script></strong></p>
+
+<p>(1) <script type="math/tex">w \equiv_L w</script></p>
+
+<p>(2) If <script type="math/tex">w \equiv_L v</script>, then <script type="math/tex">v \equiv_L w</script></p>
+
+<p>(3) If <script type="math/tex">w \equiv_L v</script> and <script type="math/tex">v \equiv_L u</script>, then <script type="math/tex">w \equiv_L u</script>.</p>
+
+<p><em>Proof</em>: (1) and (2) are obvious. For (3), consider any word <script type="math/tex">x</script>. <script type="math/tex">wx, vx</script> are either both in <script type="math/tex">L</script> or both not in <script type="math/tex">L</script>. Similarly, <script type="math/tex">vx, ux</script> are either both in <script type="math/tex">L</script> or both not in <script type="math/tex">L</script>. Suppose <script type="math/tex">wx, vx</script> are in <script type="math/tex">L</script>. 
+Then <script type="math/tex">ux</script> must be in <script type="math/tex">L</script>. Thus <script type="math/tex">wx, ux</script> are both in <script type="math/tex">L</script>. Now suppose <script type="math/tex">wx, vx</script> are both not in <script type="math/tex">L</script>. Then <script type="math/tex">ux</script> must not in <script type="math/tex">L</script>, which results in <script type="math/tex">wx, ux</script> are both not in <script type="math/tex">L</script>. Therefore, <script type="math/tex">w \equiv_L u</script>.
+ <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>For a language <script type="math/tex">L</script>, the words in <script type="math/tex">\Sigma^*</script> can be divided into <script type="math/tex">L-</script>equivalent classes. The number of these classes is called <strong>the index of <script type="math/tex">L</script></strong>. What Myhill-Nerode Theorem states is that any regular language <script type="math/tex">L</script> 
+that can be recognized by a <script type="math/tex">n-</script>state DFA has at most a finite index <script type="math/tex">n</script>. And the converse is also true. To prove this theorem, let’s prove several userful lemmas.</p>
+
+<p><strong>Lemma 12: Let <script type="math/tex">L</script> be a regular language that can be recognized by a DFA. For words <script type="math/tex">w, u</script>, if <script type="math/tex">\delta^*(q_0, w) = \delta^*(q_0, u)</script>, then <script type="math/tex">L</script> does not separate <script type="math/tex">w</script> and <script type="math/tex">u</script>.</strong></p>
+
+<p><em>Proof:</em> Consider any word <script type="math/tex">x</script>. Then <script type="math/tex">\delta^*(q_0, wx) = \delta^*(\delta^*(q_0, w), x) = \delta^*(\delta^*(q_0, u), x) = \delta^*(q_0, ux)</script>. So the terminal state is the same for <script type="math/tex">wx, ux</script> for any <script type="math/tex">x</script>. So 
+either both <script type="math/tex">wx, ux</script> are in <script type="math/tex">L</script>, or both not in <script type="math/tex">L</script>. Therefore, <script type="math/tex">L</script> does not separate <script type="math/tex">w, u</script>.  <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p><strong>Corollary 13: Let <script type="math/tex">L</script> be a regular language that can be recognized by a <script type="math/tex">m-</script>state DFA. If <script type="math/tex">L</script> can separate any two of the <script type="math/tex">n</script> words <script type="math/tex">w_1,...,w_n</script>, then <script type="math/tex">m \geq n</script>.</strong></p>
+
+<p><em>Proof</em>: If <script type="math/tex">% <![CDATA[
+m < n %]]></script>, then at least two of the following terminal states are equal:</p>
+
+<script type="math/tex; mode=display">\hat{\delta^*}(w_1),...,\hat{\delta^*}(w_n)</script>
+
+<p>, since there are at most <script type="math/tex">% <![CDATA[
+m < n %]]></script> terminal states. By Lemma 12, it means <script type="math/tex">L</script> does not separate at least one pair of them. This leads to a contradiction.  <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p><strong>Corollary 14: If a regular language can be recognized by a <script type="math/tex">n-</script>state DFA, then its index is at most <script type="math/tex">n</script>.</strong></p>
+
+<p><em>Proof:</em> This is easily concluded by Corollary 13.  <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p><strong>Theorem 15: If the index of a language <script type="math/tex">L</script> is <script type="math/tex">n</script>, then <script type="math/tex">L</script> can be recognized by a <script type="math/tex">n-</script>state DFA.</strong></p>
+
+<p><em>Proof:</em> Let the <script type="math/tex">n</script> equivalent classes be <script type="math/tex">[x_0], [x_1],...,[x_{n-1}]</script>. In particular, let <script type="math/tex">x_0 = \epsilon</script>. We construct the <script type="math/tex">n-</script>state DFA as follows.</p>
+
+<p>Take the set of <script type="math/tex">n</script> states as <script type="math/tex">Q = \{ [x_0], [x_1],...,[x_{n-1}] \}</script>. Take <script type="math/tex">q_0 = [x_0]</script>. For the terminal states, 
+take <script type="math/tex">T = \{ [x_i] \ | \ x_i \in L \}</script>. Note that if <script type="math/tex">x \in L</script>, then for any <script type="math/tex">y \in [x]</script> we have <script type="math/tex">y \in L</script>. (This is straightforward, because <script type="math/tex">y\epsilon, x\epsilon</script> must both be in <script type="math/tex">L</script>). 
+Finally, take <script type="math/tex">\delta([x_i], a) = [x_ia]</script>. We claim that the resulting <script type="math/tex">M = (\Sigma, Q, q_0, T, \delta)</script> is a <script type="math/tex">n-</script>state DFA that recognizes <script type="math/tex">L</script>.</p>
+
+<p>To see this, notice that for any word <script type="math/tex">w</script>, when it is read by <script type="math/tex">M</script>, the last state is <script type="math/tex">[w]</script>. So if a word <script type="math/tex">w</script> is accepted by <script type="math/tex">M</script>, it stops at <script type="math/tex">[w]</script>, which is a terminal state. By construction, <script type="math/tex">w \in L</script>. 
+Conversely, suppose <script type="math/tex">w \in L</script>. Its last state is <script type="math/tex">[w]</script> when it is read by <script type="math/tex">M</script>. By construction, <script type="math/tex">[w]</script> is a terminal state. Thus <script type="math/tex">w</script> is accepted by <script type="math/tex">M</script>.  <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>With Corollay 14 and Theorem 15, we have</p>
+
+<p><strong>Theorem 16 (Myhill-Nerode Theorem): A language is regular if and only if it has a finite index.</strong></p>
+:ET

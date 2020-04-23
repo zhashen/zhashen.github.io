@@ -1,0 +1,3 @@
+I"K<p>Recall that in a context-free grammar a production rule only contains one variable on its left hand side. In this post, we show that these rules can be re-written in <strong>Chomsky Normal Form</strong>, which is 
+either <script type="math/tex">X \rightarrow YZ</script> or <script type="math/tex">X \rightarrow a</script>.</p>
+:ET

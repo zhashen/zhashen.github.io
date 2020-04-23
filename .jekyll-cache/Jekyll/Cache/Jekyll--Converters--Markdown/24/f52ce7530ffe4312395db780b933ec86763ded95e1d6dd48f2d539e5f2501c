@@ -1,0 +1,86 @@
+I"�#<p>Vapnik–Chervonenkis dimension, named after its discovers Vladimir Vapnik and Alexey Chervonenkis, is the ultimate feature that determines PAC-learnability. Its precise notion is as follows.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Definiton 18 (Shattering)</strong>: We say that a class of functions <script type="math/tex">H</script> shatters a set <script type="math/tex">C</script>, if the class that is <script type="math/tex">H</script> restricted to <script type="math/tex">C</script>, contains all possible function <script type="math/tex">f: C \rightarrow \{ 0, 1\}</script>. 
+</span></p>
+
+<p>Suppose <script type="math/tex">C</script> is finite and of size <script type="math/tex">m</script>. If <script type="math/tex">H</script> shatters <script type="math/tex">C</script>, then <script type="math/tex">|H_C| = 2^m</script>. (The cardinarity of the class of functions mapping from <script type="math/tex">X</script> to <script type="math/tex">\{ 0, 1\}</script> is <script type="math/tex">2^{|X|}</script>, no matter <script type="math/tex">X</script>
+is finite or not.)</p>
+
+<p>With the notion of shattering, we can define the VC dimension of a class.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Definiton 19 (VC Dimension)</strong>: The VC dimension of a class of functions <script type="math/tex">H</script> is the largest <script type="math/tex">m</script> such that there is a set <script type="math/tex">C</script> of size <script type="math/tex">m</script> that can be shattered by <script type="math/tex">H</script>.
+</span></p>
+
+<p>A class <script type="math/tex">H</script> can shatter any set if it has infinite VC dimension.</p>
+
+<p>Recall in the proof of No Free Lunch theorem, if a set <script type="math/tex">C</script> is of size <script type="math/tex">2m</script>, and a class <script type="math/tex">H</script> can shatter <script type="math/tex">C</script>, then for any learner we can always find a distribution <script type="math/tex">D</script> that fails the learner.
+The same argument can be used to prove <script type="math/tex">(3) \Rightarrow (4)</script> in Theorem 15.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Corollary 20</strong>: PAC-Learnability <script type="math/tex">\Rightarrow</script> Finite VC Dimension.
+</span></p>
+
+<p><em>Proof</em>: Assume <script type="math/tex">H</script> is PAC-learnable and let <script type="math/tex">A</script> be any successful learner. If <script type="math/tex">H</script> has infinite dimension, then it can shatter any set <script type="math/tex">C</script> of size <script type="math/tex">2m</script>. By the same arguments in No Free Lunch theorem, there is a distribution 
+<script type="math/tex">D</script> that fails <script type="math/tex">A</script>. <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>The final piece in the Fundemental Theorem is <script type="math/tex">(4) \Rightarrow (1)</script>, i.e. Finite VC dimension <script type="math/tex">\Rightarrow</script> Uniform Convergence.</p>
+
+<p>To this end, let’s look at an important consequence of finite VC dimension.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Definition 21 (Growth Function)</strong>: The growth function of a class <script type="math/tex">H</script>, denoted by <script type="math/tex">\tau_H: N \rightarrow N</script>, is defined as 
+</span></p>
+
+<script type="math/tex; mode=display">\tau_H(m) = \max_{C \subseteq X, |C|=m} |H_C|</script>
+
+<p>. In other words, <script type="math/tex">\tau_H(m)</script> is the max number of functions after <script type="math/tex">H</script> is restricted to a set <script type="math/tex">C</script> of size <script type="math/tex">m</script>.</p>
+
+<p>If a class has finite VC dimension <script type="math/tex">d</script>, then when <script type="math/tex">m \leq d</script>, we have <script type="math/tex">\tau_H(m) = 2^m</script> since <script type="math/tex">H</script> can shatter any set of size <script type="math/tex">m</script>. When <script type="math/tex">m > d</script>, clearly <script type="math/tex">% <![CDATA[
+\tau_H(m) < 2^m %]]></script>. 
+The reason why finite VC dimension implies PAC-Learnability is that when <script type="math/tex">m</script> increases, <script type="math/tex">\tau_H(m)</script> only grows at a speed polynomial in <script type="math/tex">m</script> rather than exponentially. So the “effective size”
+of a class is bounded. As a result, the adversary looses the freedom to select any function that surprises the learner.</p>
+
+<p>The fact that <script type="math/tex">\tau_H(m)</script> grows polynomially is stated as follows.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Lemma 22 (Sauer-Shelah Lemma)</strong>: <script type="math/tex">\tau_H(m) \leq \sum_{i=1}^d \binom m i</script>. When <script type="math/tex">m > d</script>, <script type="math/tex">\tau_H(m) \leq (\frac{em}{d})^d</script>.
+</span></p>
+
+<p><em>Proof</em>: When <script type="math/tex">m \leq d</script>, <script type="math/tex">H</script> can shatter any set of size <script type="math/tex">m</script>. So <script type="math/tex">\tau_H(m) = 2^m = \sum_{i=1}^m \binom m i = \sum_{i=1}^d \binom m i</script>.</p>
+
+<p>Now consider <script type="math/tex">m \geq d + 1</script>. We prove by induction on <script type="math/tex">m</script>. Assume the lemma holds for <script type="math/tex">% <![CDATA[
+d \geq m' < m %]]></script>. Consider a set <script type="math/tex">C</script> of size <script type="math/tex">m</script>, and the class <script type="math/tex">H_C</script>. It suffices to show 
+<script type="math/tex">|H_C| \leq \sum_{i=1}^d \binom m i</script>.</p>
+
+<p>To this end, let’s divide <script type="math/tex">H_C</script> into two sets <script type="math/tex">H_1</script> and <script type="math/tex">H_2</script> in the following way. Let <script type="math/tex">C' = \{x_1,...,x_{m-1} \}</script> denote any <script type="math/tex">m-1</script> members in <script type="math/tex">C</script>. We say any <script type="math/tex">h_1, h_2 \in H_C</script> are twin functions if 
+(1) <script type="math/tex">h_1(x_i) = h_2(x_i), \ i = 1,...,m-1</script>, and (2) <script type="math/tex">h_1(x_m) = 0, h_2(x_m) = 1</script>. So we assign all such <script type="math/tex">h_1</script> to <script type="math/tex">H_1</script> and all such <script type="math/tex">h_2</script> to <script type="math/tex">H_2</script>. For the remaining functions that do not have twins, we assign 
+them to <script type="math/tex">H_1</script>. Note that</p>
+
+<script type="math/tex; mode=display">|H_C| = |H_1| + |H_2|   \tag{1}</script>
+
+<p>Now let’s investigate <script type="math/tex">H_1</script> and <script type="math/tex">H_2</script>.For <script type="math/tex">H_1</script>, observe that 
+<script type="math/tex">|H_1| = |H_{1, C'}|</script>, where <script type="math/tex">H_{1, C'}</script> means the class obtained by restricting <script type="math/tex">H_1</script> to <script type="math/tex">C'</script>. The reason is that all possible their twin functions are assinged to <script type="math/tex">H_2</script>. Since <script type="math/tex">H_{1, C'} \subseteq |H|</script> 
+(for <script type="math/tex">x \notin C'</script>, <script type="math/tex">h(x)</script> takes only one value for any <script type="math/tex">h \in H_{1, C'}</script>), we have <script type="math/tex">VC(H_{1, C'}) \leq d</script>. Therefore, applying the induction assumption we have</p>
+
+<script type="math/tex; mode=display">|H_1| = |H_{1, C'}| \leq \sum_{i=1}^d \binom {m-1} i  \tag{2}</script>
+
+<p>. On the other hand, for <script type="math/tex">H_2</script>, again we have<br />
+<script type="math/tex">|H_2| = |H_{2, C'}|</script>. Unlike <script type="math/tex">H_1</script>, any <script type="math/tex">h_2 \in H_2</script> takes exactly one value on <script type="math/tex">x_m</script>, i.e. <script type="math/tex">h_2(x_m) = 1</script>. So if <script type="math/tex">T</script> can be shattered by <script type="math/tex">H_2</script>, then <script type="math/tex">T \cup \{ x_m \}</script> can be shattered by <script type="math/tex">H</script>, since 
+for any <script type="math/tex">h_2 \in H_2</script> its twin function <script type="math/tex">h_1</script> exits in <script type="math/tex">H_1</script> and hence in <script type="math/tex">H</script> as well. Thus, <script type="math/tex">VC(H_2) \leq d - 1</script>. Applying the induction assumption we have</p>
+
+<script type="math/tex; mode=display">|H_2| \leq \sum_{i=1}^{d-1} \binom {m-1}{i}  \tag{3}</script>
+
+<p>Combining (1)(2)(3) we obtain</p>
+
+<script type="math/tex; mode=display">\tau_H(m) \leq \sum_{i=1}^{d} \binom {m}{i}</script>
+
+<p>. Finally, when <script type="math/tex">m \geq d+1</script>, we have <script type="math/tex">% <![CDATA[
+0 < \frac{d}{m} < 1 %]]></script> and</p>
+
+<script type="math/tex; mode=display">(\frac{d}{m})^d \cdot \sum_{i=1}^{d} \binom {m}{i} \leq \sum_{i=1}^{m} (\frac{d}{m})^d \binom {m}{i} = (1+\frac{d}{m})^m \leq e^d</script>
+
+<p>. Thus, 
+<script type="math/tex">\tau_H(m) \leq (\frac{ed}{m})^d  \tag*{$\blacksquare$}</script></p>
+:ET

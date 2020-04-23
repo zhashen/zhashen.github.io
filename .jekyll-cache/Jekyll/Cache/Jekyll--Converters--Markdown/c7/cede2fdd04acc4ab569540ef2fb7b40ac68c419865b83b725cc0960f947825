@@ -1,0 +1,108 @@
+I"�<p>In this post, we complete the proof of Theorem 15 by showing finite VC dimension <script type="math/tex">\Rightarrow</script> uniform convergence.</p>
+
+<p>The key point here is to bound</p>
+
+<script type="math/tex; mode=display">\sup_{h \in H} |L_S(h) - L_D(h)|</script>
+
+<p>for sufficiently large sample size <script type="math/tex">m</script>. Therefore, we have the following lemma.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Theorem 23:</strong> Consider a class of functions <script type="math/tex">H</script>. For any distribution <script type="math/tex">D</script>, if we i.i.d. draw a sample <script type="math/tex">S</script> of size <script type="math/tex">m</script>, then with probability at least <script type="math/tex">1-\delta</script>
+</span></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\sup_{h \in H} |L_S(h) - L_D(h)| < \frac{1 + \sqrt{\tau_H(2m)}}{\delta \sqrt{m/2}} %]]></script>
+
+<p><em>Proof:</em> We show</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+E[\sup_{h \in H} |L_S(h) - L_D(h)|] < \frac{1 + \sqrt{\tau_H(2m)}}{\sqrt{m/2}}  \tag{1} %]]></script>
+
+<p>. If (1) holds, then applying Markov inequality, we have</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+P[\sup_{h \in H} |L_S(h) - L_D(h)| \geq \frac{1 + \sqrt{\tau_H(2m)}}{\delta \sqrt{m/2}}] \leq \frac{E[\sup_{h \in H} |L_S(h) - L_D(h)|]}{\frac{1 + \sqrt{\tau_H(2m)}}{ \delta \sqrt{m/2}}} < \delta %]]></script>
+
+<p>, which is our desired result.</p>
+
+<p>To prove (1), let’s write</p>
+
+<script type="math/tex; mode=display">L_S(h) = \frac{1}{m} \sum_{i=1}^m l(h, z_i)</script>
+
+<p>, where <script type="math/tex">z_i = (x_i, y_i)</script> is a labelled instance, and <script type="math/tex">l(h, z_i) = I_{h(x_i) \neq y_i}</script> is the error of <script type="math/tex">h</script> applying on <script type="math/tex">z_i</script>.</p>
+
+<p>Observe that <script type="math/tex">L_D(h) = E_{S \sim D^m } L_S(h)</script>. Therefore,</p>
+
+<script type="math/tex; mode=display">E[\sup_{h \in H} |L_S(h) - L_D(h)|] = E_{S \sim D^m}\big[ \sup_{h \in H}  | E_{S' \sim D^m} [L_{S'}(h) - L_{S}(h)|] \big]  \tag{2}</script>
+
+<p>. We can put <script type="math/tex">E</script> outside the absolute value (because for any measurable functions 
+<script type="math/tex">|\int f \cdot g| \leq \int |f \cdot g|</script>), 
+and thus</p>
+
+<script type="math/tex; mode=display">E_{S \sim D^m}\big[ \sup_{h \in H}  | E_{S' \sim D^m} [L_{S'}(h) - L_{S}(h)|] \big] \leq E_{S \sim D^m}\big[ \sup_{h \in H}  E_{S' \sim D^m} |L_{S'}(h) - L_{S}(h)| \big]  \tag{3}</script>
+
+<p>Next, we can swap <script type="math/tex">E</script> and <script type="math/tex">\sup</script> (because if  <script type="math/tex">f(h) \leq \sup f(h)</script> then <script type="math/tex">\sup \int f(h) \leq \int \sup f(h)</script>). So,</p>
+
+<script type="math/tex; mode=display">E_{S \sim D^m}\big[ \sup_{h \in H}  E_{S' \sim D^m} |L_{S'}(h) - L_{S}(h)| \big]  \leq E_{S, S' \sim D^m} \sup_{h \in H}|L_{S'}(h) - L_{S}(h)|  \tag{4}</script>
+
+<p>. Combining (2)-(4), we have</p>
+
+<script type="math/tex; mode=display">E[\sup_{h \in H} |L_S(h) - L_D(h)|]  \leq E_{S, S' \sim D^m} \sup_{h \in H}|L_{S'}(h) - L_{S}(h)|  =  E_{S, S' \sim D^m} \sup_{h \in H}|\frac{1}{m} \sum_{i=1}^m [l(h, z_i), - l(h, z'_i)]| \tag{5}</script>
+
+<p>. Now let <script type="math/tex">\sigma</script> be a random vector <script type="math/tex">\{ -1, 1\}^m</script> uniformly drawn, it is not difficult to see that</p>
+
+<script type="math/tex; mode=display">E_{S, S' \sim D^m} \sup_{h \in H}|L_{S'}(h) - L_{S}(h)|  = E_{\sigma \sim \{ \pm 1\}^m } E_{S, S' \sim D^m} \sup_{h \in H} \frac{1}{m} \sum_{i=1}^m \sigma_i(l(h, z_i), - l(h, z'_i))</script>
+
+<p>. Swapping the two <script type="math/tex">E</script> we get</p>
+
+<script type="math/tex; mode=display">E_{S, S' \sim D^m} \sup_{h \in H}|L_{S'}(h) - L_{S}(h)|   =  E_{S, S' \sim D^m}  E_{\sigma \sim \{ \pm 1\}^m } \sup_{h \in H} \big| \frac{1}{m} \sum_{i=1}^m \sigma_i(l(h, z_i), - l(h, z'_i)) \big|</script>
+
+<p>. Since <script type="math/tex">S, S'</script> are independently drawn, we can fix a pair of <script type="math/tex">S, S'</script> and let <script type="math/tex">C = S \cup S'</script>.  Then <script type="math/tex">\sup_{h \in H}</script> becomes <script type="math/tex">\max_{h \in H_C}</script>. Thus, it suffices to show</p>
+
+<script type="math/tex; mode=display">E_{\sigma \sim \{ \pm 1\}^m } \max_{h \in H_C}\big|  \frac{1}{m}  \sum_{i=1}^m  \sigma_i(l(h, z_i), - l(h, z'_i))  \big| \leq \frac{1 + \sqrt{\tau_H(2m)}}{\sqrt{m/2}} \tag{6}</script>
+
+<p>. Let <script type="math/tex">\theta_h = \frac{1}{m}  \sum_{i=1}^m  \sigma_i(l(h, z_i), - l(h, z'_i))</script>. Then 
+<script type="math/tex">E_{\sigma} \theta_h = 0</script>. Furthermore, each summand in <script type="math/tex">\theta_h</script> belongs to <script type="math/tex">[-1, 1]</script>. Applying Hoeffding’s inequality, we have for any <script type="math/tex">t > 0</script></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+P_{\sigma}[|\theta_h| > t ] < 2 e^{-\frac{m t^2}{2}} %]]></script>
+
+<p>. Applying union bound we have</p>
+
+<script type="math/tex; mode=display">P_{\sigma}[\max_{h \in H_C} |\theta_h| > t ] \leq 2 \cdot |H_C| e^{-\frac{m t^2}{2}}</script>
+
+<p>. Finally, note that 
+<script type="math/tex">|H_C| \leq \tau_H(2m)</script></p>
+
+<p>. Applying the following Lemma 24, we get</p>
+
+<script type="math/tex; mode=display">E[\max_{h \in H_C}|\theta_h| ]\leq \frac{1 + \sqrt{\tau_H(2m)}}{\sqrt{m/2}}</script>
+
+<p>, which is the result of (4).  <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p><span style="color:dodgerblue">
+<strong>Lemma 24:</strong> Let <script type="math/tex">a>0, b > 3</script>, and let <script type="math/tex">Z > 0</script> be a random variable such that for any <script type="math/tex">t > 0</script>, we have <script type="math/tex">P[Z \geq t] \leq 2b \cdot e^{-\frac{t^2}{a^2}}</script>. Then<br />
+</span></p>
+
+<script type="math/tex; mode=display">E[Z] \leq a(\sqrt{\log(b)} + 1)</script>
+
+<p><em>Proof:</em></p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+E[Z] &\leq \int_{0}^{\infty} P(Z \geq t) dt \\
+&\leq a\sqrt{\log(b)} + \int_{a\sqrt{\log(b)}}^{\infty} 2b e^{-\frac{t^2}{a^2}} dt \\
+&= a\sqrt{\log(b)} + 2b \int_{a\sqrt{\log(b)}}^{\infty} \frac{1}{a\sqrt{\log(b)}} e^{-\frac{t^2}{a^2}} dt \\
+&=  a\sqrt{\log(b)} + \frac{2b}{ a\sqrt{\log(b)}} \cdot \frac{a^2}{2} e^{-\frac{( a\sqrt{\log(b)})^2}{a^2}} \\
+&=  a\sqrt{\log(b)} + \frac{a}{ \sqrt{\log(b)}}  \\
+&<  a\sqrt{\log(b)} + a
+\end{align} %]]></script>
+
+<script type="math/tex; mode=display">\tag*{$\blacksquare$}</script>
+
+<p>Finally, with Theorem 23 we easily obtain</p>
+
+<p><span style="color:dodgerblue">
+<strong>Theorem 25:</strong> Finite VC dimension <script type="math/tex">\Rightarrow</script> Uniform Convergence 
+</span></p>
+:ET

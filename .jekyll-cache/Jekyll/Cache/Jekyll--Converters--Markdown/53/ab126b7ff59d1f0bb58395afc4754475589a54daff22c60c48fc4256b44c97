@@ -1,0 +1,4 @@
+I"
+<p>The class of all functions is not PAC-learnable. The reason, loosely speaking, is simply that there are far too many functions. So that an adversary can always pick a function that surprises the 
+learner. This notion is made precise by the following theorem.</p>
+:ET

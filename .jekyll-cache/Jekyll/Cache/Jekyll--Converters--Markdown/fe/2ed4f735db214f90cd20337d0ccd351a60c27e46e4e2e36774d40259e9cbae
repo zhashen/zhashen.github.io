@@ -1,0 +1,78 @@
+I"A<p>In this series, I will introduce <strong>regular language</strong>, including its definitions, properties and my implementation in Go. This post starts with its definitions.</p>
+
+<p>Let <script type="math/tex">\Sigma</script> be an alphabet of finite size. We say a word <script type="math/tex">w</script> is a sequence <script type="math/tex">a_1...a_n</script> of finite length, where <script type="math/tex">a_i \in \Sigma, \ i=1,...,n</script>. The sequence of <script type="math/tex">0</script> length is also a word, and denoted as <script type="math/tex">\epsilon</script>.</p>
+
+<p>A Language <script type="math/tex">L</script> is a set of words. For example, let <script type="math/tex">\Sigma = \{ a, b, c\}</script>. Then <script type="math/tex">L = \{ ab, ac, abc \}</script> is a language, which contains words <script type="math/tex">ab, ac, abc</script>. Note that the empty set
+<script type="math/tex">\emptyset</script> is also a language. And the set <script type="math/tex">\{  \epsilon\}</script> is also a language, which contains only the empty word.</p>
+
+<p>We denote by <script type="math/tex">\Sigma^*</script> the language that contains all possible words.</p>
+
+<p>For any alphabet, the number of languages is infinite. And this infinity is bigger than that of natural number.</p>
+
+<p><strong>Theorem 1: For any alphabet <script type="math/tex">\Sigma</script>, the set of all languages is uncountable.</strong></p>
+
+<p><em>Proof:</em> Note that <script type="math/tex">\Sigma^*</script> is a language of infinite size. The set of all languages is the super set of <script type="math/tex">\Sigma^*</script>. Therefore, it is uncountable.  <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>One can also use the diagonal argument to prove Theorem 1. But it is the same argument in proving the cardinarity of a set is less than that of its super set.</p>
+
+<p>Out of uncountablely many languages, there is a class of languages, called the class of <strong>regular languages</strong>, that is of our paticular interest. Before giving a definition to regular language, let’s define the operations on words and
+languages.</p>
+
+<p><strong>Definition 2 (operation on words):</strong></p>
+
+<p><strong>a. If <script type="math/tex">u, v</script> are words, then <script type="math/tex">uv</script> is also a word by concatenation</strong></p>
+
+<p><strong>b. If <script type="math/tex">u</script> is a word, then <script type="math/tex">u^n</script> is a word by concatenating <script type="math/tex">n</script> instances of <script type="math/tex">u</script> for <script type="math/tex">n \geq 1</script>. When <script type="math/tex">n = 0</script>, <script type="math/tex">w^n = \epsilon</script></strong></p>
+
+<p>We use <script type="math/tex">\land, \lor</script> to mean “and” and “or”, respectively.</p>
+
+<p><strong>Definition 3 (operation on languages): <script type="math/tex">L_1, L_2</script> and <script type="math/tex">L</script> are languages. The following are all languages.</strong></p>
+
+<p><strong>a. 
+<script type="math/tex">L_1 \cup L_2 = L_1 | L_2 = \{ w | w \in L_1 \lor w \in L_2 \}</script></strong></p>
+
+<p><strong>b.
+<script type="math/tex">L_1 \cap L_2 = \{ w | w \in L_1 \land w \in L_2 \}</script></strong></p>
+
+<p><strong>c.
+<script type="math/tex">L_1 - L_2 = \{ w | w \in L_1 \land \ w \notin L_2\}</script></strong></p>
+
+<p><strong>d.
+<script type="math/tex">\bar{L} = \{ w | w \notin L \}</script></strong></p>
+
+<p><strong>e.
+<script type="math/tex">L_1 \cdot L_2 = L_1 L_2 = \{ uv | u \in L_1 \land \ v \in L_2 \}</script></strong></p>
+
+<p><strong>f.
+<script type="math/tex">L^n = \{ w_1...w_n | w_i \in L, \ i=1,...,n \}</script>, <script type="math/tex">\ n \geq 1</script>. When <script type="math/tex">n=0</script>, <script type="math/tex">L^0 = \{ \epsilon \}</script></strong></p>
+
+<p><strong>g.
+<script type="math/tex">L^* = \bigcup_{i=0}^{\infty} L^n</script></strong></p>
+
+<p><strong>h.
+<script type="math/tex">L^+ = \bigcup_{i=1}^{\infty} L^n = L L^*</script></strong></p>
+
+<p><strong>g.
+<script type="math/tex">L? = L \cup \{ \epsilon \}</script></strong></p>
+
+<p>Now we give a definition to regular languages.</p>
+
+<p><strong>Definition 3 (regular language): A regular language <script type="math/tex">L</script> is any language with the following property:</strong></p>
+
+<p><strong>a. The empty language <script type="math/tex">\emptyset</script> is a regular language.</strong></p>
+
+<p><strong>b. For any <script type="math/tex">a \in \Sigma</script>, the singleton language <script type="math/tex">\{ a \}</script> is a regular language. Its regular expression is <script type="math/tex">a</script></strong></p>
+
+<p><strong>c. If <script type="math/tex">L_1, L_2</script> are regular languages, then <script type="math/tex">L_1L_2</script> is a regular language. Its regular expression is <script type="math/tex">ab</script>, where <script type="math/tex">a \in L_1, b \in L_2</script>.</strong></p>
+
+<p><strong>d. If 
+<script type="math/tex">L_1, L_2</script> are regular languages, then <script type="math/tex">L_1 | L_2</script> is a regular language. Its regular expression is <script type="math/tex">a|b</script>, where <script type="math/tex">a\in L_1, b \in L_2</script>.</strong></p>
+
+<p><strong>e. If <script type="math/tex">L</script> is a regular language, then <script type="math/tex">L^*</script> is a regular language. Its regular expression is <script type="math/tex">a*</script>, where <script type="math/tex">a in L</script>.</strong></p>
+
+<p><strong>f. A regular regular language can only be obtained through a-e.</strong></p>
+
+<p>By Definition 3, if <script type="math/tex">L</script> is a regular language, <script type="math/tex">L^+</script> and <script type="math/tex">L?</script> are also regular languages.</p>
+
+<p>The class of regular languages can be characterized by finite state machines, which will be our topic of the next post.</p>
+:ET

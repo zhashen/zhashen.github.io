@@ -1,0 +1,195 @@
+I"�A<p>In this post, I will demonstrate the proofs that any finite class is both PAC-learnable and agnostic PAC-learnable. The former is easier with the trick of union bound.
+The latter is more difficult and involves the notion of uniform convergence.</p>
+
+<h2 id="pac-learnability-of-finite-class">PAC-learnability of Finite Class</h2>
+
+<p>Recall that we are talking about a domain <script type="math/tex">X</script> and a binary label set <script type="math/tex">Y=\{ 0, 1 \}</script>. Consider a finite class <script type="math/tex">H</script>. To prove <script type="math/tex">H</script> is PAC-learnable, all we need is to find the 
+desired learning algorithm <script type="math/tex">A</script>. Luckily, ERM is the desired learner.</p>
+
+<p>To show ERM is our desired learner, we proceed as follows. For a distribution <script type="math/tex">D</script> over <script type="math/tex">X \times Y</script>, if the realizability assumption holds for <script type="math/tex">H</script>, it means that there exists some 
+function <script type="math/tex">h^* \in H</script> achieves 0 generalization error, i.e. <script type="math/tex">L_D(h^*) = 0</script>. Now this function <script type="math/tex">h^*</script> would also achieves <script type="math/tex">0</script> training error for any sample <script type="math/tex">S</script>.<br />
+So for any distribution <script type="math/tex">D</script>, consider a i.i.d. drawn sample <script type="math/tex">S</script> of size <script type="math/tex">m</script>. The ERM algorithm would output a function <script type="math/tex">h</script> and it must be the case that <script type="math/tex">h</script> achieves <script type="math/tex">0</script> training error.
+ Otherwise, since we already have <script type="math/tex">h^*</script> with <script type="math/tex">0</script> training error, if <script type="math/tex">h</script> achieves a training error greater <script type="math/tex">0</script>, ERM would never output <script type="math/tex">h</script>.</p>
+
+<p>The output <script type="math/tex">h</script> may or may not be <script type="math/tex">h^*</script>. For a sample <script type="math/tex">S</script>, there exists a subset of “bad” functions <script type="math/tex">H_b(S)</script> such that any <script type="math/tex">h' \in H_b(S)</script> would achieve <script type="math/tex">0</script> training error on <script type="math/tex">S</script>. Of course, 
+ the optimal function <script type="math/tex">h^*</script> is in any <script type="math/tex">H_b(S)</script>. If ERM can luckily pick <script type="math/tex">h^*</script>, then we will be very happy. But there is no guarantee that this would happen for any sample <script type="math/tex">S</script>. When given the sample 
+ <script type="math/tex">S</script>, ERM always outputs a function <script type="math/tex">h</script> from the bad class <script type="math/tex">H_b(S)</script>. We call it bad class because it might contain many functions that achieve large generalization errors.</p>
+
+<p>Now the question is: how can ERM avoid picking a bad function? The answer is straighforward: increasing the training sample size <script type="math/tex">m</script>. For a bad function to be picked by ERM, it is necessary that 
+ all <script type="math/tex">m</script> instances fall into its “good” area. Since it is a bad function, the probability measure of its “good” area in <script type="math/tex">X</script> is less than <script type="math/tex">1-\epsilon</script>. The probability that all <script type="math/tex">m</script> instances 
+ fall into this area is <script type="math/tex">% <![CDATA[
+<(1-\epsilon)^m \leq e^{-\epsilon m} %]]></script>.</p>
+
+<p>Let’s denote by <script type="math/tex">E_h</script> the event that all <script type="math/tex">m</script> instances fall into its good area. So <script type="math/tex">% <![CDATA[
+P[E_h] < e^{-\epsilon m} %]]></script>.  Now let’s consider the set of all bad functions <script type="math/tex">H_b</script>. The probability that 
+all <script type="math/tex">m</script> instances fall completely in at least one of the bad functions is <script type="math/tex">P[\bigcup_{h \in H_b} E_h]</script>. Since the class <script type="math/tex">H</script> is finite, the size of bad functions is at most <script type="math/tex">|H|</script>. Therefore, 
+applying the trick of union bound, we have</p>
+
+<script type="math/tex; mode=display">P[\bigcup_{h \in H_b} E_h] \leq \sum_{h \in H_b} P[E_h] \leq |H| \cdot e^{-\epsilon m}</script>
+
+<p>. So the probability that ERM avoids selecting a bad function, which is also the probability that ERM picks a good function, is</p>
+
+<script type="math/tex; mode=display">P[ERM \ picks \ a \ good \ function] = 1-P[\bigcup_{h \in H_b} E_h] > 1 - |H| \cdot e^{-\epsilon m}</script>
+
+<p>. Finally, in order to make this probability great than <script type="math/tex">1-\delta</script>, we simply solve the inequality</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+ & 1 - |H| \cdot e^{-\epsilon m} > 1 - \delta \\
+ & \Rightarrow |H| \cdot e^{-\epsilon m} < \delta \\
+ & \Rightarrow m > \frac{\log (H/\delta)}{\epsilon}
+\end{align} %]]></script>
+
+<p>. Therefore, as long as the training sample size <script type="math/tex">m</script> is greater than <script type="math/tex">m_H(\epsilon, \delta) = \frac{\log (H/\delta)}{\epsilon}</script>, ERM is guarantee not to return a bad function. 
+We also call <script type="math/tex">m_H(\epsilon, \delta)</script> the <strong>sample complexity</strong>.</p>
+
+<p>So by the above arguments, we have proved</p>
+
+<p><span style="color:dodgerblue">
+ Theorem 6: Any finite class is PAC-learnable.
+</span></p>
+
+<h2 id="agnostic-pac-learnability-of-finite-class">Agnostic PAC-learnability of Finite Class</h2>
+
+<p>The arguments of proving PAC-learnability of finite class would not work in the agnostic case. The reason is that in proving PAC-learnability we rely on a key observation: the measure of the good 
+area of a bad function is bounded by <script type="math/tex">1-\epsilon</script>. But in the agnostic case, since we don’t know the generalization error of the optimal function, we don’t know the error of bad functions either. 
+Therefore, we can’t bound the probability that <script type="math/tex">m</script> instances fall into the good area of a bad function. Furthermore, since the realizability assumption does not hold, the optimial function 
+may not even achieve the best training errors. This means even we avoid <script type="math/tex">m</script> from completely falling in any bad function, there is no guarantee that the optimal function is selected. 
+In short, we need a different argument for proving agnostic PAC-learnability for finite class.</p>
+
+<p>The idea is to investigate the difference between training error and generalization error for any function <script type="math/tex">h \in H</script>. That is, we look at</p>
+
+<script type="math/tex; mode=display">|L_S(h) - L_D(h)|</script>
+
+<p>. If a sample <script type="math/tex">S</script> is good enough such that for any function <script type="math/tex">h \in H</script> the gap <script type="math/tex">|L_S(h)-L_D(h)|</script> is small, then we should be confident that the selected function <script type="math/tex">h</script> can achieve a small 
+generalization error <script type="math/tex">L_D(h) \leq \inf_{h' \in H} L_D(h') + \epsilon</script>.</p>
+
+<p>Now we need to make precise two notions: (1) what do we by a good sample <script type="math/tex">S</script>; (2) how large <script type="math/tex">m</script> do we need to obtain a good sample with a very high chance (<script type="math/tex">> 1 - \delta</script>)?</p>
+
+<p>The answer to the first question refers to a notion called <strong><script type="math/tex">\epsilon-</script>representative</strong>.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Definition 7 (<script type="math/tex">\epsilon</script>-representative Sample)</strong> We say a sample <script type="math/tex">S</script> is <script type="math/tex">\epsilon-</script>representative with respect to a class of functions <script type="math/tex">H</script> if for any <script type="math/tex">h \in H</script> we have 
+<script type="math/tex">% <![CDATA[
+|L_S(h) - L_D(h)| < \epsilon %]]></script>
+</span></p>
+
+<p>If <script type="math/tex">S</script> is a good sample, it can bound the true error of the function returned by ERM. This is made precise by the following lemma.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Lemma 8</strong>: If a sample <script type="math/tex">S</script> is <script type="math/tex">\frac{\epsilon}{2}-</script>representative, then the function <script type="math/tex">h</script> returned by ERM based on this sample can achieve generalization error 
+<script type="math/tex">L_D(h) \leq \inf_{h' \in H} L_D(h') + \epsilon</script>
+</span></p>
+
+<p><em>Proof:</em> For any <script type="math/tex">h' \in H</script>, we have</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+L_D(h) < L_S(h) + \frac{\epsilon}{2} \leq L_S(h') + \frac{\epsilon}{2} \leq L_D(h') + \frac{\epsilon}{2} + \frac{\epsilon}{2} = L_D(h') + \epsilon \tag*{$\blacksquare$} %]]></script>
+
+<p>The <script type="math/tex">\epsilon-</script>representativeness is related to a notion called <strong>uniform convergence</strong>.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Definition 9 (Uniform Convergence)</strong>: We say a class of functions <script type="math/tex">H</script> has uniform convergence property if for any <script type="math/tex">\epsilon, \delta > 0</script>, with sufficiently large 
+sample size <script type="math/tex">m</script>, the i.i.d. drawn sample <script type="math/tex">S</script> from any distribution <script type="math/tex">D</script> is <script type="math/tex">\epsilon-</script>representative with probability at least <script type="math/tex">1-\delta</script>.
+</span></p>
+
+<p>The sample completely for uniform convergence is denoted by <script type="math/tex">m_H^{UC}(\epsilon, \delta)</script>. Combing Lemma 8 and Definition 9, we can easily arrive at the following lemma.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Lemma 10</strong>: Uniform Convergence <script type="math/tex">\Rightarrow</script> Agnostic PAC-learnability
+</span></p>
+
+<p><em>Proof</em>: Assume <script type="math/tex">H</script> has uniform convergence property and let its sample completely be <script type="math/tex">m^{UC}_H(\epsilon, \delta)</script>. If we take sample size <script type="math/tex">m > m_H(\epsilon, \delta) = m_H^{UC}(\frac{\epsilon}{2}, \delta)</script>,
+then a sample <script type="math/tex">S</script> with size <script type="math/tex">m</script> is <script type="math/tex">\frac{\epsilon}{2}-</script>representative with probability at least <script type="math/tex">1-\delta</script>. By Lemma 8, ERM will return a desired function. That is, <script type="math/tex">H</script> is agnostic 
+PAC-learnable and ERM is the desired learner. <script type="math/tex">\tag*{$\blacksquare$}</script></p>
+
+<p>For completing the proof that a finite class is agnostic PAC-learnable, we just need to prove it is uniformly convergent, and along the way find out its sample complexity.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Theorem 11</strong>: Any finite class has uniform convergence property. 
+</span></p>
+
+<p><em>Proof</em>: Consider a finite class <script type="math/tex">H</script>, and a random sample <script type="math/tex">S</script> of size <script type="math/tex">m</script>. The probability that <script type="math/tex">S</script> is <script type="math/tex">\epsilon-</script>representative is</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align} 
+P[S \ is \ \epsilon-representative] &= 1 - P[S \ is \ not \ \epsilon-representative] \\
+&= 1 - P[\bigcup_{h \in H} |L_S(h)-L_D(h)|>\epsilon] \\
+& \geq 1 - |H| \cdot P[|L_S(h)-L_D(h)|>\epsilon] \\
+\end{align} %]]></script>
+
+<p>Note that <script type="math/tex">P[L_S(h) - L_D(h)>\epsilon]</script> in the above inequality is a bound applied to all <script type="math/tex">h</script>, rather than the true probability value. We just write it this way to make the demonstration smooth.</p>
+
+<p>So in order for <script type="math/tex">P[S \ is \ \epsilon-representative] > 1 - \delta</script>, we simply want
+<script type="math/tex">% <![CDATA[
+|H| \cdot P[|L_S(h)-L_D(h)| > \epsilon ] < \delta %]]></script>. To this end, let’s investigate further <script type="math/tex">L_S(h)</script> and <script type="math/tex">L_D(h)</script>.</p>
+
+<p>In fact, <script type="math/tex">L_S(h) = \frac{1}{m} \sum_{i=1}^m I_{h(x) \neq y}</script> and <script type="math/tex">L_D(h) = E[I_{h(x) \neq y}]</script>. Therefore, <script type="math/tex">L_D(h)</script> is the expected value of <script type="math/tex">L_S(h)</script> (with respect to the random instances 
+<script type="math/tex">(x_1,y_1),...,(x_m, y_m)</script> in <script type="math/tex">S</script>). Applying Hoeffding’s inequality we have</p>
+
+<script type="math/tex; mode=display">P[|L_S(h) - L_D(h)| > \epsilon] \leq 2 e^{-2m \epsilon^2}</script>
+
+<p>. Substituting it to the previous inequality we have</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+|H| \cdot 2 e^{-2m \epsilon^2} < \delta \Rightarrow m > \frac{\log (2|H|/\delta)}{2\epsilon^2}\tag*{$\blacksquare$} %]]></script>
+
+<p>Theorem 11 also gives the sample complexity of uniform convergence for the finite class</p>
+
+<script type="math/tex; mode=display">m_H^{UC}(\epsilon, \delta) = \frac{\log (2 |H| /\delta)}{2\epsilon^2}</script>
+
+<p>.</p>
+
+<p>Therefore, combining Theorem 11 and Lemma 10, we conclude that any finite class is agnostic PAC-learnable.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Theorem 12</strong>: A finite class <script type="math/tex">H</script> is agnostic PAC-learnable. Its sample complexity is 
+</span></p>
+
+<script type="math/tex; mode=display">m_H(\epsilon, \delta) = m_H^{UC}(\frac{\epsilon}{2}, \delta) = \frac{2\log (2|H|/\delta)}{\epsilon^2}</script>
+
+<h2 id="more-on-uniform-convergence">More on Uniform Convergence</h2>
+
+<p>Looking at Definition 9, one may wonder why the name “uniform convergence”. In fact, “convergence” means the probability that <script type="math/tex">S</script> is a good sample convergees to <script type="math/tex">1</script> as sample size <script type="math/tex">m</script> 
+tends to infinity. The term “uniform” refers to the fact that for all distributions, their probability converge “at the same pace”. To make this notion precise, consider the following notion 
+of <strong>Uniform Glivenko-Cantelli Class</strong>.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Definition 13 (Uniform Glivenko-Cantelli Class)</strong>: A class of functions <script type="math/tex">H</script> is a uniform Glivenko-Cantelli class if 
+</span></p>
+
+<script type="math/tex; mode=display">\forall \epsilon , \ \ \lim_{m \rightarrow \infty} \sup_{D} P[\sup_{h \in H} |L_{S_m}(h) - L_D(h)| > \epsilon] = 0</script>
+
+<p><span style="color:dodgerblue">
+, where <script type="math/tex">S_m</script> is a random sample of size <script type="math/tex">m</script> drawn i.i.d. according to the distribution <script type="math/tex">D</script>.
+</span></p>
+
+<p>Putting <script type="math/tex">\lim_{m \rightarrow \infty}</script> in front of <script type="math/tex">\sup_{D}</script> implies the meaning “uniform convergence”. It is straighforward to verify these two notions are equivalent.</p>
+
+<p><span style="color:dodgerblue">
+<strong>Lemma 14:</strong> <script type="math/tex">H</script> has uniform convergence <script type="math/tex">\Leftrightarrow</script> <script type="math/tex">H</script> is a uniform Glivenko-Cantelli class.
+</span></p>
+
+<p>The fundemental theorem of statistical learning also includes the uniform Glivenko-Cantelli class as an equivalent statement.</p>
+
+<p><span style="color:dodgerblue">
+ <strong>Theorem 15 (Fundermental Theorem in Statistical Learning Theory)</strong>: Consider a class of functions <script type="math/tex">H</script>. The following statements are equivalent.</span></p>
+
+<p><span style="color:dodgerblue">
+(1) <script type="math/tex">H</script> is a uniform  Glivenko-Cantelli class.
+</span></p>
+
+<p><span style="color:dodgerblue">
+(2) <script type="math/tex">H</script> is agnostic PAC-learnable;
+</span></p>
+
+<p><span style="color:dodgerblue">
+(3) <script type="math/tex">H</script> is PAC-learnable;
+</span></p>
+
+<p><span style="color:dodgerblue">
+(4) <script type="math/tex">H</script> has finite VC-dimension;
+</span></p>
+
+<p>We have demonstrated <script type="math/tex">(1) \Rightarrow (2) \Rightarrow (3)</script>. In the next post, I will discuss No Free Lunch Theorem by which <script type="math/tex">(3) \Rightarrow (4)</script> can be established.</p>
+:ET
